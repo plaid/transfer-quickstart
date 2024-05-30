@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/custom_bootstrap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <title>View my Bills</title>
+</head>
+
+<body>
+  <div class="container w-75 pt-5">
+    <h3>Bill details</h3>
+    <p>How'd you like to pay your bill using Plaid Transfer?</p>
+    <div class="w-75 border border-3 rounded p-3 mx-auto">
+      <p class="mb-2" id="welcomeMessage">Let's pay your bill</p>
+      <a href="bills.html" class="btn btn-link mb-2">Back to bills</a>
+      <div class=" w-100 flex-row d-flex justify-content-between gap-4">
+        <div class="w-50 mb-4 ">
+          <div class="border border-1 p-1 rounded-2" id="billDetails">
+            <table class="table table-striped m-0">
+              <tr>
+                <th scope="row" class="">Bill</th>
+                <td class="text-end" id="billDescription"></td>
+              </tr>
+              <tr>
+                <th scope="row">Original Amount</th>
+                <td class="text-end" id="originalAmount"></td>
+              </tr>
+              <tr>
+                <th scope="row">Amount Paid</th>
+                <td class="text-end" id="amountPaid"></td>
+              </tr>
+              <tr>
+                <th scope="row">Amount Pending</th>
+                <td class="text-end" id="amountPending"></td>
+              </tr>
+              <tr>
+                <th scope="row">Remaining</th>
+                <td class="text-end" id="amountRemaining"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="w-50 flex-column">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tui-tab" data-bs-toggle="tab" data-bs-target="#tui" type="button"
+                role="tab" aria-controls="tui" aria-selected="true">Transfer UI</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="no-tui-tab" data-bs-toggle="tab" data-bs-target="#notui" type="button"
+                role="tab" aria-controls="notui" aria-selected="false">Without Transfer UI</button>
+            </li>
+          </ul>
+          <!-- Interface that uses Transfer UI -->
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="tui" role="tabpanel" aria-labelledby="tui-tab">
+              <div class="w-100 mb-4">
+                <label for="selectAccount" id="banksMsg" class="form-label
+                        ">Select an account</label>
+                <select id="selectAccount" class="form-select" aria-label="Select an account"></select>
+              </div>
+              <div class="w-100 mb-4">
+                <label for="amountToPay" class="form-label
+              ">Amount to pay</label>
+                <input type="number" class="form-control" id="amountToPay" />
+              </div>
+
+              <div class="w-100 mb-4">
+                <button type="button" class="btn btn-primary text-white" id="payBill">Pay Bill</button>
+              </div>
+            </div>
+            <!-- Interface that doesn't use Transfer UI -->
+            <div class="tab-pane fade" id="notui" role="tabpanel" aria-labelledby="no-tui-tab">
+
+              <div class="w-100 mb-4">
+                <label for=" selectAccount" id="banksMsgNoTUI" class="form-label
+                                    ">Select an account</label>
+                <select id="selectAccountNoTUI" class="form-select" aria-label="Select an account"></select>
+              </div>
+              <div class="w-100 mb-4">
+                <label for="amountToPayNoTUI" class="form-label
+                          ">Amount to pay</label>
+                <input type="number" class="form-control" id="amountToPayNoTUI" />
+              </div>
+
+              <div class="w-100 mb-4">
+                <button type="button" class="btn btn-primary text-white" id="payBillNoTUI">Pay Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="my-4">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="text-end">Amount</th>
+              <th>Status<br><span class="small">(Hover for details)</span></th>
+              <th>Dashboard</th>
+            </tr>
+          </thead>
+          <tbody id="reportTable"></tbody>
+        </table>
+        <div class="w-75 border border-1 p-2 rounded-2" id="deubgCalls">
+          <p class="text-secondary">Debug area:</p>
+          <button type="button" class="btn btn-secondary" id="syncServer">Perform Server Sync</button>
+          <button type="button" class="btn btn-secondary" id="fireWebhook">Fire a webhook</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger my-3" id="signOut">Sign out</button>
+      <!-- Debug messages go here -->
+      <div id="debugOutput"></div>
+      <!-- Modal dialog if you're not using Link's Transfer UI -->
+      <div class="modal fade" id="customDialog" tabindex="-1" aria-labelledby="customDialogLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="customDialogLabel">Confirm your transfer</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped m-0">
+                <tr>
+                  <th scope="row">From</th>
+                  <td class="text-end" id="dlogAccount"></td>
+                </tr>
+                <tr>
+                  <th scope="row">To</th>
+                  <td class="text-end" id="toAccount">Pay My Utility Bill</td>
+                </tr>
+                <tr>
+                  <th scope="row">Date</th>
+                  <td class="text-end"><span id="dlogDate"></span> <span data-bs-toggle="tooltip"
+                      data-bs-placement="top" class="bi bi-info-circle"
+                      title="You probably want to add some language here about how long payments take to process"></spa>
+                  </td>
+                </tr>
+              </table>
+              <p class="small text">By clicking "Confirm", you authorize Pay My Utility Bill to make this transfer and
+                agree to the <a href="">Terms of Service</a></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="dlogConfirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+  <script type="module" src="js/bill-details.js"></script>
+
+</body>
+
+</html>
