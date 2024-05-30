@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> 
+  -->
+  <link rel="stylesheet" href="./css/custom_bootstrap.css" />
+
+  <title>Base Sample App</title>
+</head>
+
+<body>
+  <div class="container w-75 pt-5">
+    <h3>Pay Your Electric Bills</h3>
+    <p id="welcomeMessage">Hi, there! It's your local utility. Please sign in to view and pay your bills</p>
+    <div id="notSignedIn" class="d-flex justify-content-evenly align-items-stretch">
+      <div class="d-flex flex-column gap-2 border border-3 rounded p-3">
+        <h4>Create an account!</h4>
+        <label for="#username">Account username</label><input placeholder="JoeTest" id="username" />
+        <label for="#firsNname">Legal first name</label><input placeholder="Joe" id="firstName" />
+        <label for="#lastName">Legal last name</label><input placeholder="Test" id="lastName" />
+        <button type="button" class="btn btn-primary text-white" id="createAccount">Create account!</button>
+      </div>
+      <div id="existingUsers" class="d-flex flex-column gap-2  border border-3 rounded p-3">
+        <h4>Sign in!</h4>
+        Or, sign in as one of these users:
+        <select id="existingUsersSelect"></select>
+        <button type="button" class="btn btn-primary text-white" id="signIn">Sign in!</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/home.js"></script>
+</body>
+
+</html>
