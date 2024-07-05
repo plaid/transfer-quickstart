@@ -6,8 +6,8 @@ import {
   prettyDate,
   getDetailsAboutStatus,
 } from "./utils.js";
-import { initiatePayment } from "./make-payment.js";
-import {startPaymentNoTUI, paymentDialogConfirmed} from "./make-payment-no-tui.js";
+import { initiatePaymentWasClicked } from "./make-payment.js";
+import { startPaymentNoTUIWasClicked, paymentDialogConfirmed } from "./make-payment-no-tui.js";
 
 /**
  * Call the server to see what banks the user is connected to.
@@ -150,10 +150,10 @@ const signedInCallBack = (userInfo) => {
  */
 const selectorsAndFunctions = {
   "#signOut": () => signOut(signedOutCallBack),
-  "#payBill": initiatePayment,
+  "#payBill": initiatePaymentWasClicked,
   "#syncServer": performServerSync,
   "#fireWebhook": fireTestWebhook,
-  "#payBillNoTUI": startPaymentNoTUI,
+  "#payBillNoTUI": startPaymentNoTUIWasClicked,
   "#dlogConfirmBtn": paymentDialogConfirmed,
 };
 

@@ -7,21 +7,31 @@ import { getBillDetails, getPaymentOptions } from "./bill-details.js";
  * you would follow this approach.
  ***********************/
 
-const shouldIShowEmbeddedLink = () => { 
+/**
+ * We can show the embedded link UI if you want to connect to a new account.
+ * Since the TransferUI flow requires defining the transfer amount as well, 
+ * we won't show the embedded link UI until the has also entered an amount.
+ */
+const shouldIShowEmbeddedLink = () => {
   if (document.querySelector("#selectAccount").value === "new" &&
-  document.querySelector("#amountToPay").value > 0) {
+    document.querySelector("#amountToPay").value > 0) {
     showSelector("#plaidEmbedContainer");
     hideSelector("#payBill");
-    actuallyInitiatePayment(true);
+    initiatePayment(true);
   } else {
     hideSelector("#plaidEmbedContainer");
     showSelector("#payBill");
   }
 }
 
-
-export const initiatePayment = async (_) => {
-  actuallyInitiatePayment(false);
+/**
+ * The button that initiates this event will only appear if the user has 
+ * selected a pre-existing account (and entered an amount to pay). So we
+ * will skip the embedded Link portion and just bring up the Transfer UI "confirm"
+ * dialog.
+ */
+export const initiatePaymentWasClicked = async (_) => {
+  initiatePayment(false);
 }
 
 /**
@@ -33,8 +43,8 @@ export const initiatePayment = async (_) => {
  * Note that if we don't send down an account ID to use, that's a sign to Link
  * that we'll need to connect to a bank first.
  */
-export const actuallyInitiatePayment = async (useEmbeddedSearch = false) => {
-  console.log(`Starting payment, but embedded search is ${useEmbeddedSearch }`)
+export const initiatePayment = async (useEmbeddedSearch = false) => {
+  console.log(`Starting payment, but embedded search is ${useEmbeddedSearch}`)
   const billId = new URLSearchParams(window.location.search).get("billId");
   const accountId = document.querySelector("#selectAccount").value;
   const amount = document.querySelector("#amountToPay").value;
@@ -79,7 +89,7 @@ export const actuallyInitiatePayment = async (useEmbeddedSearch = false) => {
     const targetElement = document.querySelector("#plaidEmbedContainer");
     startEmbeddedLink(linkToken, successHandler, targetElement);
   } else {
-   startLink(linkToken, successHandler);
+    startLink(linkToken, successHandler);
   }
 };
 

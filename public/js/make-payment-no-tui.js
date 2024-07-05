@@ -1,6 +1,6 @@
 
 import { startLink, exchangePublicToken, startEmbeddedLink } from "./link.js";
-import { showSelector, hideSelector, callMyServer, currencyAmount , prettyDate} from "./utils.js";
+import { showSelector, hideSelector, callMyServer, currencyAmount, prettyDate } from "./utils.js";
 import { getBillDetails, getPaymentOptions } from "./bill-details.js";
 
 
@@ -13,20 +13,42 @@ import { getBillDetails, getPaymentOptions } from "./bill-details.js";
 let pendingPaymentObject = {};
 
 
+
+/**
+ * We can show the embedded link UI if the user wants to connect to a new account. 
+ */
 const shouldIShowEmbeddedLinkNoTUI = () => {
   if (document.querySelector("#selectAccountNoTUI").value === "new" &&
-  document.querySelector("#amountToPayNoTUI").value > 0) {
+    document.querySelector("#amountToPayNoTUI").value > 0) {
     showSelector("#plaidEmbedContainerNoTUI");
     hideSelector("#payBillNoTUI");
-    prepareEmbedContainerNoTUI();
+    addNewAccountThenStartPayment();
   } else {
     hideSelector("#plaidEmbedContainerNoTUI");
     showSelector("#payBillNoTUI");
   }
 }
 
+/**
+ * This function is called when the "Pay Bill" button is clicked. With the 
+ * embedded Link flow, this button is only displayed if you're asking to connect
+ * to an existing account. So we can skip right to the "Show the payment
+ * confirmation" dialog
+ */
+export const startPaymentNoTUIWasClicked = async () => {
+  const accountId = document.querySelector("#selectAccountNoTUI").value;
+  await preparePaymentDialog(accountId);
+};
 
-const prepareEmbedContainerNoTUI = async () => {
+
+/**
+ * If our user decides to add a new account, we can create a link
+ * token like normal. In the success handler, we ask our server to return an 
+ * account ID from the item that was just created, so we can then kick off the 
+ * actual payment. (Ideally, this works best if you've customized your link 
+ * flow so that your user selects a single account)
+ */
+const addNewAccountThenStartPayment = async () => {
   const linkTokenData = await callMyServer(
     "/server/tokens/create_link_token",
     true
@@ -41,52 +63,18 @@ const prepareEmbedContainerNoTUI = async () => {
     document.querySelector("#selectAccountNoTUI").value = newAccountId;
     preparePaymentDialog(newAccountId);
   }
+
+  // In the non-Transfer UI flow, Link is only used when we're connecting
+  // to a new account. So we'll always use embedded Link here.
   const targetElement = document.querySelector("#plaidEmbedContainerNoTUI");
   startEmbeddedLink(linkTokenData.link_token, successHandler, targetElement);
-};
-
-/**
- * First, let's see if our user asked to connect to a new account. If so, we'll
- * create a link token and start the Link flow through the addNewAccount function.
- */
-export const startPaymentNoTUI = async () => {
-  const accountId = document.querySelector("#selectAccountNoTUI").value;
-  if (accountId === "new") {
-    await addNewAccountThenStartPayment();
-  } else {
-    await preparePaymentDialog(accountId);
-  }
-};
-
-
-/**
- * If a user decides to add a new account, you can create a link
- * token like normal. We ask our server to return an account ID from the
- * item we just created. (Ideally, this works best if you've customized your
- * link flow so that your user selects a single account)
- */
-const addNewAccountThenStartPayment = async () => {
-  const linkTokenData = await callMyServer(
-    "/server/tokens/create_link_token",
-    true
-  );
-  startLink(linkTokenData.link_token, async (publicToken, metadata) => {
-    console.log("Finished with Link!");
-    console.log(metadata);
-    const newAccountId = await exchangePublicToken(publicToken, true);
-    await getPaymentOptions();
-    // A little hacky, but let's change the value of our drop-down so we
-    // can grab the account name later.
-    document.querySelector("#selectAccountNoTUI").value = newAccountId;
-    preparePaymentDialog(newAccountId);
-  });
 };
 
 /**
  * Next, we'll start a transfer by gathering up some information about the
  * payment and using that to populate a consent dialog.
  */
- const preparePaymentDialog = async (accountId) => {
+const preparePaymentDialog = async (accountId) => {
   const billId = new URLSearchParams(window.location.search).get("billId");
   const amount = document.querySelector("#amountToPayNoTUI").value;
   console.log(`Paying bill ${billId} from bank ${accountId} for $${amount}`);
