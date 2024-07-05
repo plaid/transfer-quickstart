@@ -25,6 +25,28 @@ export const startLink = async function (linkToken, asyncCustomSuccessHandler) {
   handler.open();
 };
 
+export const startEmbeddedLink = async function (linkToken, asyncCustomSuccessHandler, targetDiv) {
+  const handler = Plaid.createEmbedded({
+    token: linkToken,
+    onSuccess: async (publicToken, metadata) => {
+      console.log(`Finished with Link! ${JSON.stringify(metadata)}`);
+      await asyncCustomSuccessHandler(publicToken, metadata);
+    },
+    onExit: async (err, metadata) => {
+      console.log(
+        `Exited early. Error: ${JSON.stringify(err)} Metadata: ${JSON.stringify(
+          metadata
+        )}`
+      );
+    },
+    onEvent: (eventName, metadata) => {
+      console.log(`Event ${eventName}, Metadata: ${JSON.stringify(metadata)}`);
+    },
+  },
+  targetDiv);
+};
+
+
 /**
  * Exchange our Link token data for an access token
  */
