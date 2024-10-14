@@ -60,15 +60,16 @@
           <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="tui" role="tabpanel" aria-labelledby="tui-tab">
               <div class="w-100 mb-4">
-                <label for="selectAccount" id="banksMsg" class="form-label
-                        ">Select an account</label>
-                <select id="selectAccount" class="form-select" aria-label="Select an account"></select>
-              </div>
-              <div class="w-100 mb-4">
                 <label for="amountToPay" class="form-label
               ">Amount to pay</label>
                 <input type="number" class="form-control" id="amountToPay" />
               </div>
+              <div class="w-100 mb-4">
+                <label for="selectAccount" id="banksMsg" class="form-label
+                        ">Select an account</label>
+                <select id="selectAccount" class="form-select" aria-label="Select an account"></select>
+              </div>
+              <div class="w-100 mb-4 d-none" style="height: 350px;" id="plaidEmbedContainer"></div>
 
               <div class="w-100 mb-4">
                 <button type="button" class="btn btn-primary text-white" id="payBill">Pay Bill</button>
@@ -76,18 +77,17 @@
             </div>
             <!-- Interface that doesn't use Transfer UI -->
             <div class="tab-pane fade" id="notui" role="tabpanel" aria-labelledby="no-tui-tab">
-
-              <div class="w-100 mb-4">
-                <label for=" selectAccount" id="banksMsgNoTUI" class="form-label
-                                    ">Select an account</label>
-                <select id="selectAccountNoTUI" class="form-select" aria-label="Select an account"></select>
-              </div>
               <div class="w-100 mb-4">
                 <label for="amountToPayNoTUI" class="form-label
                           ">Amount to pay</label>
                 <input type="number" class="form-control" id="amountToPayNoTUI" />
               </div>
-
+              <div class="w-100 mb-4">
+                <label for="selectAccount" id="banksMsgNoTUI" class="form-label
+                                    ">Select an account</label>
+                <select id="selectAccountNoTUI" class="form-select" aria-label="Select an account"></select>
+              </div>
+              <div class="w-100 mb-4 d-none" style="height: 350px;" id="plaidEmbedContainerNoTUI"></div>
               <div class="w-100 mb-4">
                 <button type="button" class="btn btn-primary text-white" id="payBillNoTUI">Pay Bill</button>
               </div>
@@ -160,6 +160,8 @@
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 
   <script type="module" src="js/bill-details.js"></script>
+  <script type="module" src="js/make-payment.js"></script>
+  <script type="module" src="js/make-payment-no-tui.js"></script>
 
 </body>
 
