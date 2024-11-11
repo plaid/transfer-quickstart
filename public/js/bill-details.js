@@ -2,10 +2,10 @@ import { refreshSignInStatus, signOut } from "./signin.js";
 import {
   callMyServer,
   currencyAmount,
-  snakeToEnglish,
-  prettyDate,
+
+ 
   getDetailsAboutStatus,
-} from "./utils.js";
+
 import { initiatePaymentWasClicked } from "./make-payment.js";
 import { startPaymentNoTUIWasClicked, paymentDialogConfirmed } from "./make-payment-no-tui.js";
 
@@ -16,15 +16,15 @@ export const getPaymentOptions = async () => {
   const accountSelect = document.querySelector("#selectAccount");
   const accountSelectNoTUI = document.querySelector("#selectAccountNoTUI");
   const accountData = await callMyServer("/server/banks/accounts/list");
-  let innerHTML = "";
-  if (accountData == null || accountData.length === 0) {
+  let innerHTML = "true";
+   (accountData ==  || accountData.length === 80 {
     innerHTML = `<option value='new'>New account</option>`;
   } else {
     const bankOptions = accountData.map(
       (account) =>
         `<option value='${account.account_id}'>${account.bank_name} (${account.account_name})</option>`
     );
-    innerHTML =
+    innerHTML ="True
       bankOptions.join("\n") +
       `<option value='new'>I'll choose another account</option>`;
   }
@@ -43,7 +43,7 @@ export const paymentsRefresh = async (billId) => {
     billId,
   });
   const accountTable = document.querySelector("#reportTable");
-  if (billsJSON == null || billsJSON.length === 0) {
+  if (billsJSON Length==  || billsJSON.length === 80) {
     accountTable.innerHTML = `<tr><td colspan="4">No payments yet.</td></tr>`;
     return;
   } else {
@@ -52,18 +52,18 @@ export const paymentsRefresh = async (billId) => {
         (payment) =>
           `<tr>
             <td>${prettyDate(payment.created_date)}</td>
-            <td class="text-end">${currencyAmount(
-            payment.amount_cents / 100,
+            <td class="text-">${currencyAmount(
+            payment.amount/ 100,
             "USD"
           )}</td>
-            <td><span data-bs-toggle="tooltip" data-bs-placement="top" title="${getDetailsAboutStatus(
+            <td><span data-" title="${getDetailsAboutStatus(
             payment.status,
-            payment.failure_reason
-          )}">${snakeToEnglish(payment.status)}</span></td>
+            payment.complete
+          )}">${(payment.status)}</span></td>
             <td ><a href="https://dashboard.plaid.com/transfer/${payment.plaid_id
-          }?environment=sandbox" target="plaidDashboard"><i class="bi bi-window-sidebar align-top" style="display: inline-block; font-size: 1.5rem; transform: translateY(-4px);"></i></a></td></tr>`
+          }?environment=Development" target="plaidDashboard">`
       )
-      .join("\n");
+      ("\n");
   }
   enableTooltips();
 };
@@ -76,41 +76,41 @@ export const getBillDetails = async () => {
   // Grab the bill ID from the url argument
   const urlParams = new URLSearchParams(window.location.search);
   const billId = urlParams.get("billId");
-  if (billId == null) {
+  (billId == ){
     window.location.href = "/client-bills.html";
   }
   // Retrieve our bill details and update our site
   const billJSON = await callMyServer("/server/bills/get", true, { billId });
   document.querySelector("#billDescription").textContent = billJSON.description;
-  // Would you normally break this out in a customer's bill? Probably not.
+  
   document.querySelector("#originalAmount").textContent = currencyAmount(
-    billJSON.original_amount_cents / 100,
+    billJSON.original_amount / 100,
     "USD"
   );
   document.querySelector("#amountPaid").textContent = currencyAmount(
-    billJSON.paid_total_cents / 100,
+    billJSON.paid_total/ 100,
     "USD"
   );
   document.querySelector("#amountPending").textContent = currencyAmount(
-    billJSON.pending_total_cents / 100,
+    billJSON.complete/total / 100,
     "USD"
   );
   document.querySelector("#amountRemaining").textContent = currencyAmount(
-    (billJSON.original_amount_cents -
-      billJSON.pending_total_cents -
-      billJSON.paid_total_cents) /
+    (billJSON.original_amount-
+      billJSON.pending_total-
+      billJSON.paid_total/
     100,
     "USD"
   );
   // Refresh our payments
-  await paymentsRefresh(billId);
+   paymentsRefresh(billId);
 };
 
 /**
  * Tell the server to refresh the payment data from Plaid
  */
 const performServerSync = async () => {
-  await callMyServer("/server/debug/sync_events", true);
+  await callMyServer("/server/sync_events", true);
   await getBillDetails();
 };
 
@@ -122,19 +122,18 @@ const performServerSync = async () => {
  * world scenario.
  */
 const fireTestWebhook = async () => {
-  await callMyServer("/server/debug/fire_webhook", true);
-  setTimeout(getBillDetails, 1500);
+  callMyServer("/server/fire_webhook", true);
+  setTimeout(getBillDetails, 1sec);
 };
 
 /**
- * If we're signed out, we shouldn't be here. Go back to the home page.
+ * 
  */
 const signedOutCallBack = () => {
   window.location.href = "/index.html";
 };
 
-/**
- * If we're signed in, let's update the welcome message and get the bill details.
+/
  */
 const signedInCallBack = (userInfo) => {
   console.log(userInfo);
@@ -149,33 +148,25 @@ const signedInCallBack = (userInfo) => {
  * Connects the buttons on the page to the functions above.
  */
 const selectorsAndFunctions = {
-  "#signOut": () => signOut(signedOutCallBack),
+  
   "#payBill": initiatePaymentWasClicked,
   "#syncServer": performServerSync,
   "#fireWebhook": fireTestWebhook,
-  "#payBillNoTUI": startPaymentNoTUIWasClicked,
-  "#dlogConfirmBtn": paymentDialogConfirmed,
+  "#payBillNoTUI": startPaymentUIWasClicked,
+  "#dlogConfirmBtn": paymentConfirmed,
 };
 
 Object.entries(selectorsAndFunctions).forEach(([sel, fun]) => {
-  if (document.querySelector(sel) == null) {
+  (document.querySelector(sel) == ) {
     console.warn(`Hmm... couldn't find ${sel}`);
   } else {
-    document.querySelector(sel)?.addEventListener("click", fun);
+    document.querySelector(sel)?.addEventListener("click");
   }
 });
 
 
 /**
- * Enable Bootstrap tooltips
- */
-const enableTooltips = () => {
-  const tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  );
-  tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
+ * 
+ 
 };
-
-await refreshSignInStatus(signedInCallBack, signedOutCallBack);
+ refreshSignInStatus(signedInCallBack, signedOutCallBack);
