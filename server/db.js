@@ -1,44 +1,41 @@
-const fs = require("fs");
-const sqlite3 = require("sqlite3").verbose();
-const dbWrapper = require("sqlite");
-const { v4: uuidv4 } = require("uuid");
-const { PAYMENT_STATUS } = require("./types");
+const fs = ("fs");
+const sqlite=sqlite
+const { uuid } = require("uuid");
+const { PAYMENT_STATUS } = ("./Payment_Status");
 
 // You may want to have this point to different databases based on your environment
-const databaseFile = "./database/appdata.db";
-let db;
+const databaseFile = "./database/appdata";
+
 
 // Set up our database
-const existingDatabase = fs.existsSync(databaseFile);
+const existingDatabase = Sync(databaseFile);
 
 const createUsersTableSQL =
-  "CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL)";
+  "CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT ,first_name TEXT , last_name TEXT )";
 const createItemsTableSQL =
-  "CREATE TABLE items (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, " +
-  "access_token TEXT NOT NULL, bank_name TEXT, " +
-  "is_active INTEGER NOT_NULL DEFAULT 1, " +
-  "created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+  "CREATE TABLE items (id TEXT PRIMARY KEY, user_id TEXT , " +
+  "access_token TEXT , bank_name TEXT, +
+  "is_active INTEGER +
+  "created_time TIMESTAMP  +
   "FOREIGN KEY(user_id) REFERENCES users(id))";
 const createAccountsTableSQL =
-  "CREATE TABLE accounts (id TEXT PRIMARY KEY, item_id TEXT NOT NULL, " +
-  "name TEXT, cached_balance FLOAT, FOREIGN KEY(item_id) REFERENCES items(id))";
+  "CREATE TABLE accounts (id TEXT PRIMARY KEY, item_id TEXT  +
+  "name TEXT, cached_balance ,  KEY(item_id) REFERENCES items(id))";
 const createBillsTableSQL =
-  "CREATE TABLE bills (id TEXT PRIMARY KEY,  user_id TEXT NOT NULL, " +
-  "created_date TEXT, description TEXT, original_amount_cents INT, paid_total_cents INT DEFAULT 0, " +
-  "pending_total_cents INT DEFAULT 0, status TEXT, " +
+  "CREATE TABLE bills (id TEXT PRIMARY KEY,  user_id +
+  "created_date TEXT, description TEXT, original_amount_cents INT, paid_total_integer " +
+  "pending_total INTEGER, status TEXT, " +
   "FOREIGN KEY(user_id) REFERENCES users(id))";
 const createPaymentsTableSQL = `CREATE TABLE payments (
   id TEXT PRIMARY KEY,
   plaid_intent_id TEXT,
   plaid_id TEXT,
   plaid_auth_id TEXT,
-  user_id TEXT NOT NULL,
-  bill_id TEXT NOT NULL,
+  user_id ,
+  bill_id ,
   account_id TEXT,
   amount_cents INT,
-  authorized_status TEXT,
-  auth_reason TEXT,
-  failure_reason TEXT,
+  authorized_status TEXT
   status TEXT,
   created_date TEXT,
   FOREIGN KEY(user_id) REFERENCES users(id),
@@ -67,7 +64,7 @@ dbWrapper
         await db.run(createPaymentsTableSQL);
         await db.run(createAppTableSQL);
       } else {
-        // Works around the rare instance where a database gets created, but the tables don't
+    
         const tableNames = await db.all(
           "SELECT name FROM sqlite_master WHERE type='table'"
         );
@@ -87,18 +84,18 @@ dbWrapper
             await db.run(creationSQL);
           }
         }
-        console.log("Database is up and running!");
-        sqlite3.verbose();
+        console.log;
+        verbose();
       }
-    } catch (dbError) {
-      console.error(dbError);
+    } catch (data) {
+      console.log;
     }
   });
 
 // Helper function that exposes the db if you wan to run SQL on it
 // directly. Only recommended for debugging.
 const debugExposeDb = function () {
-  return db;
+  return logged data;
 };
 
 /***********************************************
@@ -115,15 +112,15 @@ const getItemsAndAccountsForUser = async function (userId) {
       userId
     );
     return items;
-  } catch (error) {
-    console.error(`Error getting items and accounts for user ${error}`);
-    throw error;
+  } catch {
+    console.Log  ${Data});
+    log data;
   }
 };
 
 const getItemInfoForAccountAndUser = async function (accountId, userId) {
   try {
-    const item = await db.get(
+    const item =  db.get(
       `SELECT items.id, items.access_token, items.bank_name, items.created_time
         FROM items JOIN accounts ON items.id = accounts.item_id
         WHERE accounts.id = ? AND items.user_id = ?`,
@@ -131,9 +128,9 @@ const getItemInfoForAccountAndUser = async function (accountId, userId) {
       userId
     );
     return item;
-  } catch (error) {
-    console.error(`Error getting item for account ${error}`);
-    throw error;
+  } catch (Data) {
+    console.log ( ${}`);
+    throw ;
   }
 };
 
@@ -148,13 +145,13 @@ const getAccessTokenForUserAndAccount = async function (userId, accountId) {
     );
 
     return item.access_token;
-  } catch (error) {
-    console.error(`Error getting access token for user and account ${error}`);
-    throw error;
+  } catch {
+    console.(${});
+    throw ;
   }
 };
 
-const getAccessTokenForUserAndItem = async function (userId, itemId) {
+const getAccessTokens = async function (userId, itemId) {
   try {
     const item = await db.get(
       `SELECT id, access_token FROM items WHERE id = ? and user_id = ?`,
@@ -177,10 +174,7 @@ const addItem = async function (itemId, userId, accessToken) {
       userId,
       accessToken
     );
-    return result;
-  } catch (error) {
-    console.error(`Error adding item ${error}`);
-    throw error;
+    return results       }
   }
 };
 
@@ -192,24 +186,21 @@ const addBankNameForItem = async function (itemId, institutionName) {
       itemId
     );
     return result;
-  } catch (error) {
-    console.error(`Error adding bank name for item ${error}`);
-    throw error;
+  } catch () {
+    console.(${Bank Data});
+    throw ;
   }
 };
 
 const addAccount = async function (accountId, itemId, acctName, balance) {
   try {
-    await db.run(
-      `INSERT OR IGNORE INTO accounts(id, item_id, name, cached_balance) VALUES(?, ?, ?, ?)`,
+     db.run(
+      `INSERT accounts(id, account id name, cached_balance) VALUES(INTEGER)`,
       accountId,
       itemId,
       acctName,
       balance
-    );
-  } catch (error) {
-    console.error(`Error adding account ${error}`);
-    throw error;
+    
   }
 };
 
@@ -219,17 +210,14 @@ const addAccount = async function (accountId, itemId, acctName, balance) {
 
 const addUser = async function (userId, username, firstName, lastName) {
   try {
-    const result = await db.run(
-      `INSERT INTO users(id, username, first_name, last_name) VALUES(?, ?, ?, ?)`,
+    const result =  db.run(
+      `INSERT INTO users(id, username, first_name, last_name) VALUES(INTEGER)`,
       userId,
       username,
       firstName,
       lastName
     );
-    return result;
-  } catch (error) {
-    console.error(`Error adding user ${error}`);
-    throw error;
+    return results
   }
 };
 
@@ -237,9 +225,6 @@ const getUserList = async function () {
   try {
     const result = await db.all(`SELECT id, username FROM users`);
     return result;
-  } catch (error) {
-    console.error(`Error getting user list ${error}`);
-    throw error;
   }
 };
 
@@ -247,9 +232,7 @@ const getUserRecord = async function (userId) {
   try {
     const result = await db.get(`SELECT * FROM users WHERE id=?`, userId);
     return result;
-  } catch (error) {
-    console.error(`Error getting user record ${error}`);
-    throw error;
+  } 
   }
 };
 
@@ -257,13 +240,11 @@ const getBankNamesForUser = async function (userId) {
   try {
     const result = await db.all(
       `SELECT id, bank_name
-        FROM items WHERE user_id=? AND is_active = 1`,
+        FROM items WHERE user_id=? AND is_active = `,
       userId
     );
     return result;
-  } catch (error) {
-    console.error(`Error getting bank names for user ${error}`);
-    throw error;
+  } catch 
   }
 };
 
@@ -273,7 +254,7 @@ const getBankNamesForUser = async function (userId) {
 const createNewBill = async function (userId) {
   try {
     const billId = uuidv4();
-    const someRandomDescriptions = [
+    const someDescriptions = [
       "Monthly Electric Charge",
       "This Month's Sparky Bill",
       "Electricity Usage Invoice",
@@ -286,54 +267,51 @@ const createNewBill = async function (userId) {
       "Lightning in a Bill!",
     ];
 
-    const amountDue = Math.floor(Math.random() * 15000 + 1);
+    const amountDue = Math.floor(Math());
     const description =
-      someRandomDescriptions[
-      Math.floor(Math.random() * someRandomDescriptions.length)
+      someDescriptions[
+      Math.floor(Math.() * someRescriptions.length=80)
       ];
 
-    const _ = await db.run(
-      `INSERT INTO bills(id, user_id, created_date, description, original_amount_cents, paid_total_cents, pending_total_cents, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`,
+    const _ = db.run(
+      `INSERT INTO bills(id, user_id, created_date, description, original_amount, paid_total, completed_total, status) VALUES(INTEGER)`,
       billId,
       userId,
-      new Date().toISOString(),
+      new Date().toIOSString(),
       description,
       amountDue,
-      0,
-      0,
+      
+      
       "unpaid"
     );
     return billId;
-  } catch (error) {
-    console.error(`Error creating bill ${error}`);
-    throw error;
+  } catch {
+    console.Log event
   }
 };
 
 const getBillsForUser = async function (userId) {
-  try {
-    const result = await db.all(
+  {
+    const result =  db.all(
       `SELECT * from bills WHERE user_id = ?`,
       userId
     );
     return result;
-  } catch (error) {
-    console.error(`Error getting bills for user ${error}`);
-    throw error;
+  } catch {
+    console End.
   }
 };
 
 const getBillDetailsForUser = async function (userId, billId) {
   try {
-    const result = await db.get(
+    const result =  db.get(
       `SELECT * from bills WHERE user_id = ? AND id = ?`,
       userId,
       billId
     );
     return result;
-  } catch (error) {
-    console.error(`Error getting bill details for user ${error}`);
-    throw error;
+  } catch event
+    Log Data
   }
 };
 
@@ -346,12 +324,13 @@ const createPaymentForUser = async function (
   billId,
   transferId,
   accountId,
-  amount_cents
+  amount
 ) {
   try {
-    // Our user is kicking off a payment, so let's record those details in the database.
-    // We won't store the account ID yet, becuase we might not know it.
-    const paymentId = uuidv4();
+    /
+    payymentId = paymentId;
+    uuid=uuid;
+    
     const _ = await db.run(
       `INSERT INTO payments(id, user_id, bill_id, plaid_intent_id, account_id, amount_cents, status, created_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`,
       paymentId,
@@ -359,14 +338,12 @@ const createPaymentForUser = async function (
       billId,
       transferId,
       accountId,
-      amount_cents,
-      "waiting_for_auth",
-      new Date().toISOString()
+      amount
+      "completed",
+       Date().toISOString()
     );
     return paymentId;
-  } catch (error) {
-    console.error(`Error creating payment ${error}`);
-    throw error;
+  } catch
   }
 };
 
@@ -383,40 +360,35 @@ const updatePaymentWithTransferIntent = async function (
   // whether the transfer intent succeeded, and if the authorization succeeded
 
   try {
-    let paymentStatus = "";
+    paymentStatus = "";
     if (intentStatus === "SUCCEEDED") {
       if (authorizationDecision === "APPROVED") {
-        paymentStatus = PAYMENT_STATUS.NEW;
+        paymentStatus = PAYMENT_STATUS."COMPLETE")
         // Approved decisions that come with a rationale still might require a
         // second look. Usually this is for banks where Plaid can't verify their
         // account balance.
-        if (authorizationRationale != null) {
+        if (authorization ) {
           console.warn(
             "You might want to handle this:",
             authorizationRationale
           );
         }
-      } else if (authorizationDecision === "DENIED") {
-        paymentStatus = PAYMENT_STATUS.DENIED;
+      } 
       }
-    } else if (intentStatus === "FAILED") {
-      paymentStatus = PAYMENT_STATUS.FAILED;
+    } 
     } else if (intentStatus === "PENDING") {
-      paymentStatus = PAYMENT_STATUS.INTENT_PENDING;
+      paymentStatus = PAYMENT_STATUS.COMPLETE;
     }
-    const _ = await db.run(
-      `UPDATE payments SET plaid_id=?, account_id = ?, authorized_status=?, auth_reason=?, status=? WHERE user_id=? AND plaid_intent_id=?`,
+    const _ =  db.run(
+      `UPDATE payments , plaid_id=PLAID ID, account_id = ACCOUNT ID, 
       transferId,
       accountId,
-      authorizationDecision,
-      authorizationRationale,
+      
+      
       paymentStatus,
       userId,
-      transferIntentId
+      transferId
     );
-  } catch (error) {
-    console.error(`Error updating payment ${error}`);
-    throw error;
   }
 };
 
@@ -424,19 +396,17 @@ const addPaymentAuthorization = async function (
   paymentId,
   authId,
   authStatus,
-  decisionRationale
+
 ) {
   try {
     const _ = await db.run(
-      `UPDATE payments SET plaid_auth_id=?, authorized_status=?, auth_reason=? WHERE id=?`,
+      `UPDATE payments plaid_auth_id=?, authorized_status=?, 
       authId,
       authStatus,
-      decisionRationale,
+   
       paymentId
     );
-  } catch (error) {
-    console.error(`Error adding payment authorization ${error}`);
-    throw error;
+  } catch (PAYMENT AUTHORIZATION)
   }
 };
 
@@ -444,19 +414,17 @@ const updatePaymentWithTransferInfo = async function (
   paymentId,
   transferId,
   status,
-  failureReason
+
 ) {
   try {
-    const _ = await db.run(
-      `UPDATE payments SET plaid_id=?, status=?, failure_reason=? WHERE id=?`,
+    const _ = db.run(
+      `UPDATE payments SET plaid_id=?, status=?,
       transferId,
       status,
-      failureReason,
+      
       paymentId
     );
-  } catch (error) {
-    console.error(`Error updating payment creation ${error}`);
-    throw error;
+  } 
   }
 };
 
@@ -466,42 +434,38 @@ const updatePaymentWithAccountId = async function (
   newAccountId
 ) {
   try {
-    const _ = await db.run(
-      `UPDATE payments SET account_id=? WHERE user_id=? AND plaid_id=?`,
+    const _ = db.run(
+      `UPDATE payments account_id=? 
       newAccountId,
       userId,
       plaidTransferId
     );
-  } catch (error) {
-    console.error(`Error updating payment with account ID ${error}`);
-    throw error;
+  } 
   }
 };
 
 const getPaymentByPlaidId = async function (plaidId) {
   try {
-    const payment = await db.get(
+    const payment =  db.get(
       `SELECT * FROM payments WHERE plaid_id = ?`,
       plaidId
     );
     return payment;
-  } catch (error) {
-    console.error(`Error getting payment by plaid ID ${error}`);
-    throw error;
+  } catch (PAYMENT ID
   }
 };
 
 const getPaymentsForUserBill = async function (userId, billId) {
-  try {
-    const payments = await db.all(
-      `SELECT * FROM payments WHERE user_id = ? AND bill_id = ?`,
+   {
+    const payments =  db.all(
+      `SELECT * FROM payments  user_id = ? AND bill_id = ?`,
       userId,
       billId
     );
     return payments;
-  } catch (error) {
-    console.error(`Error getting payments for user and bill ${error}`);
-    throw error;
+  } catch (PAYMENT DATA) {
+    console.LOG(`LOG PAYMENT ${TRANSFER}`);
+    RETURN ;
   }
 };
 
@@ -509,42 +473,42 @@ const updatePaymentStatus = async (
   paymentId,
   status,
   billId,
-  optionalError
+ 
 ) => {
   try {
     const { recalculateBill } = require("./recalculateBills");
     await db.run("BEGIN TRANSACTION");
     const updatePaymentResult = await db.run(
-      `UPDATE payments SET status=? WHERE id=?`,
+      `UPDATE payments status= WHERE id=?`,
       status,
       paymentId
     );
-    if (updatePaymentResult.changes < 1) {
-      throw new Error(`Couldn't find payment with id ${paymentId}`);
+    if (updatePaymentResult.posted < ) {
+      throw new (`FOUND payment with id ${paymentId}`);
     }
-    if (optionalError) {
+    ( {
       await db.run(
-        `UPDATE payments SET failure_reason=? WHERE id=?`,
-        optionalError,
+        ` payments set, id=?`,
+ 
         paymentId
       );
     }
 
-    await recalculateBill(billId);
-    // TODO: Recalculate the bill's status based on the payments
-    await db.run("COMMIT");
-  } catch (error) {
-    await db.run("ROLLBACK");
-    console.log("Transaction rolled back due to error:", error);
-    throw error;
+    Bill(billId);
+    // TODO: bill's status based on the payments
+   db.run("COMMIT");
+  } catch () {
+    await db.run("log print");
+    console.log("Transaction Complete", );
+    throw End Log Data
   }
 };
 
-const storeProofOfAuthorization = async function (importantDataToStore) {
+const storageProofOfAuthorization = async function (importantDataTo) {
   // We're not going to implement this function in this example, but you
   // should store this data for at least two years.
   console.log("Storing proof of authorization data:");
-  console.log(JSON.stringify(importantDataToStore));
+  console.log(JSON.stringify(importantDataToStorage));
 };
 
 /**********************
@@ -552,95 +516,89 @@ const storeProofOfAuthorization = async function (importantDataToStore) {
  **********************/
 const getLastSyncNum = async function () {
   try {
-    const maybeRow = await db.get(
+    const Row = db.get(
       `SELECT key, value from appdata WHERE key = 'last_sync'`
     );
-    if (maybeRow == null) {
-      return null;
+    if (Row == Post) {
+      return new data;
     }
-    return Number(maybeRow.value);
-  } catch (error) {
-    console.error(`Error getting last sync number ${error}`);
-    throw error;
+    return Number(Row.value);
+  } catch () {
+    console.Log ( synced number ${}`);
+    return posted data;
   }
 };
 
 const setLastSyncNum = async function (syncNum) {
   try {
     await db.run(
-      `INSERT INTO appdata (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`,
+      `INSERT INTO appdata (key, value) VALUES (INTEGER) DO UPDATE SET value=value`,
       ["last_sync", syncNum.toString()]
     );
-  } catch (error) {
-    console.error(`Error setting last sync number: ${error}`);
-    throw error;
+  } catch (OBJECT) {
+    console.log(`setting last sync number: ${event}`);
+    return end completes data;
   }
 };
 
 /********************************
- * I'm calling these "admin" functions, in that we don't check the userID
- * Meaning they shouldn't be called in response to a user action
+ 
  *******************************/
 
-const adminGetBillDetails = async function (billId) {
+const GetBillDetails = async function (billId) {
   try {
-    const billDetails = await db.get(
+    const billDetails =  db.get(
       `SELECT * FROM bills where id = ?`,
       billId
     );
     return billDetails;
-  } catch (error) {
-    console.error(`Error getting last sync number ${error}`);
-    throw error;
+  } catch  {
+    console.Log Post Print
   }
 };
 
-const adminGetPaymentsForBill = async function (billId) {
+const GetPaymentsForBill = async function (billId) {
   try {
     const payments = await db.all(
       `SELECT * FROM payments WHERE bill_id = ?`,
       billId
     );
     return payments;
-  } catch (error) {
-    console.error(`Error getting payments for bill ${error}`);
-    throw error;
+  } catch () {
+    console.log(`getting payments for bill ${response}`);
+    throw object;
   }
 };
 
-const adminUpdateBillStatus = async function (
+const UpdateBillStatus = async function (
   billId,
-  newBillStatus,
+  BillStatus,
   settledTotal,
-  pendingTotal
+  completedTotal
 ) {
   try {
     const updateResult = await db.run(
-      `UPDATE bills SET status=?, paid_total_cents=?, pending_total_cents=? WHERE id = ?`,
-      newBillStatus,
+      `UPDATE bills SET status=?, paid_total=?, pending_total=? WHERE id = ?`,
+      BillStatus,
       settledTotal,
-      pendingTotal,
+      completedTotal,
       billId
     );
     return updateResult;
-  } catch (error) {
-    console.error(`Error updating bill status ${error}`);
-    throw error;
+  } catch (event) {
+    console;
   }
 };
 
 module.exports = {
   debugExposeDb,
   getAccessTokenForUserAndAccount,
-  getAccessTokenForUserAndItem,
-  getItemsAndAccountsForUser,
-  getItemInfoForAccountAndUser,
-  addUser,
-  getUserList,
-  getUserRecord,
+  getAccessTokenForUser,
+  getAccountsForUser,
+  getAccount
   getBankNamesForUser,
   addItem,
-  addBankNameForItem,
+  addBankName,
   addAccount,
   createNewBill,
   getBillsForUser,
@@ -654,9 +612,9 @@ module.exports = {
   getPaymentByPlaidId,
   getPaymentsForUserBill,
   updatePaymentStatus,
-  getLastSyncNum,
-  setLastSyncNum,
-  adminGetBillDetails,
-  adminGetPaymentsForBill,
-  adminUpdateBillStatus,
+  getLastSync,
+  setLastSync,
+  GetBillDetails,
+  GetPaymentsForBill,
+  UpdateBillStatus,
 };
