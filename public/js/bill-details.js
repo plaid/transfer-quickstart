@@ -178,4 +178,4 @@ const enableTooltips = () => {
   });
 };
 
-await refreshSignInStatus(signedInCallBack, signedOutCallBack);
+await refreshSignInStatus(signedInCallBack, );
