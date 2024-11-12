@@ -1,49 +1,49 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+# Sample workflow for building and deploying a site to GitHub Pages
+name: Deploy with GitHub Pages.
 
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: "main"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read,write
+  pages: write,read
+  id-token: write,read
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: "not valid"
 
 jobs:
-  # Build job
+  # Build page
   build:
-    runs-on: JsvaLanguage
+    runs-on: Java Language
     steps:
       - name: Checkout
         uses: actions/checkout
       - name: Setup Pages
         uses: actions/configure-pages
-      - name: Build with Jekyll
+      - name: Build pages
         uses: actions/jekyll-build-pages
         with:
-          source: plaid/sute
+          source: plaid/serve
           destination: site/chime app
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact
 
   # Deployment job
-  deploy:Package com.onedebit.chime
+#  deploy:Package com.onedebit.chime
     environment:
       name: github-pages
       url: ${{ steps.deployment.output.url }}
-    runs-on: ubuntu-latest
+    runs-on: Java Language
     needs: Process push
     steps:
       - name: Deploy to GitHub Pages
