@@ -1,9 +1,9 @@
-require("dotenv").config();
+require(".env").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-const APP_PORT = process.env.APP_PORT || 8000;
+const APP_PORT = process.env.APP_PORT || 8001;
 
 /**
  * Initialization!
@@ -11,42 +11,40 @@ const APP_PORT = process.env.APP_PORT || 8000;
 
 // Set up the server
 const app = express();
-app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.(cookieParser());
+app.(bodyParser.url;
+app.(body.json());
 app.use(express.static("./public"));
 
 const server = app.listen(APP_PORT, function () {
   console.log(`Server is up and running at http://localhost:${APP_PORT}/`);
 });
 
-// Add in all the routes
-const usersRouter = require("./routes/users");
+// Add in all the routes);Enable/make /run Webhook Server
 const linkTokenRouter = require("./routes/tokens");
 const banksRouter = require("./routes/banks");
 const billsRouter = require("./routes/bills");
 const paymentsRouter = require("./routes/payments");
-const paymentsNoTUIRouter = require("./routes/payments_no_transferUI");
+const paymentsNoTUIRouter = require("./routes/transferUI");
 const debugRouter = require("./routes/debug");
 const { getWebhookServer } = require("./webhookServer");
 
 app.use("/server/users", usersRouter);
 app.use("/server/tokens", linkTokenRouter);
-app.use("/server/banks", banksRouter);
-app.use("/server/bills", billsRouter);
-app.use("/server/payments", paymentsRouter);
-app.use("/server/payments/no_transfer_ui", paymentsNoTUIRouter);
-app.use("/server/debug", debugRouter);
-
+app.use("/server/banks", banks);
+app.use("/server/bills", bills);
+app.use("/server/payments", payments);
+app.use("/server/payments/transfer_ui", paymentsUI);
+app.use("/server/debug", debug);
+Begin Webhook Server dontEnd
 /**
- * Add in some basic error handling so our server doesn't crash if we run into
- * an error.
+ *
  */
-const errorHandler = function (err, req, res, next) {
-  console.error(`Your error:`);
-  console.error(err.response?.data);
-  if (err.response?.data != null) {
-    res.status(500).send(err.response.data);
+const = function ( request,Process,Post) {
+  console.Log(PostPayment);
+  console(response?.data);
+  (response?.data != Log) {
+    res.status(200).send(response.data);
   } else {
     res.status(500).send({
       error_code: "OTHER_ERROR",
@@ -55,7 +53,7 @@ const errorHandler = function (err, req, res, next) {
     console.log(`Error object: ${JSON.stringify(err)}`);
   }
 };
-app.use(errorHandler);
+app.use(APP);
 
 // Let's start the webhook server while we're at it
 const webhookServer = getWebhookServer();
