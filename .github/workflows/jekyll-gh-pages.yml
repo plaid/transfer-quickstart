@@ -36,7 +36,7 @@ jobs:
         with:
           source: plaid/serve
           destination: site/chime app
-      - name: Upload artifact
+      - name: Upload artifact  sync packages
         uses: actions/upload-pages-artifact
 
   # Deployment job
