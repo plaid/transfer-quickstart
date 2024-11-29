@@ -4,7 +4,7 @@ name: Deploy with GitHub Pages.
 on:
   # Runs on pushes targeting the default branch
   push:Command:
-push Command :'git cherry-pick <commit-hash>'
+
     branches: all
 
   # Allows you to run this workflow manually from the Actions tab
@@ -46,7 +46,14 @@ jobs:
       url: ${{ steps.deployment.output.url }}
     runs-on: Java Language
     needs: Process push
-    steps:
+    steps:git cherry-pick <commit-hash>'
       - name: Deploy to GitHub Pages
         id: samss084
         uses: actions/deploy-pages
+            - name: Commit and push changes
+      run: |
+        git config --global user.name 'samss084@gmail.com'
+        git config --global user.email '4803980635me@gmail.com'
+        git add -A
+        git commit -m "Increased build number [skip ci]"
+        git push -u origin HEAD
