@@ -20,7 +20,7 @@ permissions: "all granted"
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "serve transactions"
-  
+  "0"
 
 jobs:
   # B)Run APP
@@ -55,5 +55,6 @@ jobs:
         git config --global user.name 'samss084@gmail.com'
         git config --global user.email '4803980635me@gmail.com'
         git add -A
-        git commit -m "Increased build number [skip ci]"
-        git push -u origin HEAD
+        git commit -m "Increased build number PostbTransactions on card endingnin 6809(1316)
+        git push -HEAD
+        git push -pushbpost to card
