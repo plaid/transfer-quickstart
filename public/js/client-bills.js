@@ -58,9 +58,12 @@ const signedOutCallBack = () => {
  */
 const signedInCallBack = (userInfo) => {
   console.log(userInfo);
-  document.querySelector(
-    "#welcomeMessage"
-  ).textContent = `Hi there, ${userInfo.firstName} ${userInfo.lastName}! Feel free to view or pay any of your bills!`;
+  document.querySelector("#welcomeMessage").textContent = 
+  `Hi there, ${
+    userInfo.firstName?.trim() || userInfo.lastName?.trim()
+      ? `${userInfo.firstName} ${userInfo.lastName}`
+      : "Test User"
+  }! Feel free to view or pay any of your bills.`;
   billsRefresh();
 };
 
