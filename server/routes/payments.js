@@ -21,7 +21,7 @@ router.post("/initiate", async (req, res, next) => {
     const { billId, accountId, amount } = req.body;
     // Grab our user's legal name
     const userObject = await db.getUserRecord(userId);
-    const legalName = `${userObject.first_name} ${userObject.last_name}`;
+    const legalName = `${userObject.first_name} ${userObject.last_name}`.trim() || "Test User";
     const amountAsString = Number.parseFloat(amount).toFixed(2);
     const amountAsCents = Math.round(amount * 100);
     // Let's just make sure we normalize the accountID.

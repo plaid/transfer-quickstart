@@ -138,9 +138,12 @@ const signedOutCallBack = () => {
  */
 const signedInCallBack = (userInfo) => {
   console.log(userInfo);
-  document.querySelector(
-    "#welcomeMessage"
-  ).textContent = `Hi there, ${userInfo.firstName} ${userInfo.lastName}! Let's pay your bill.`;
+  document.querySelector("#welcomeMessage").textContent = 
+  `Hi there, ${
+    userInfo.firstName?.trim() && userInfo.lastName?.trim()
+      ? `${userInfo.firstName} ${userInfo.lastName}`
+      : "Test User"
+  }! Let's pay your bill.`;
   getBillDetails();
   getPaymentOptions();
 };

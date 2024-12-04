@@ -147,7 +147,7 @@ async function authorizeTransfer(
   paymentId
 ) {
   const userInfo = await db.getUserRecord(userId);
-  const legalName = `${userInfo.first_name} ${userInfo.last_name}`;
+  const legalName = `${userInfo.first_name} ${userInfo.last_name}`.trim() || "Test User";
 
   const response = await plaidClient.transferAuthorizationCreate({
     access_token: accessToken,
