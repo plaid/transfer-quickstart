@@ -13,7 +13,7 @@ jobs:
     steps:api
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:KARAMJAMEELMOORE@GMAIL.COM
+        samsrodrigiez@gmail.com
           node-version: 20
       - run: npm ci
       - run: npm test
@@ -30,5 +30,41 @@ jobs:
         with:w3w
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-      - run: npm 
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm b
+          steps:
+- run: npm publish
+  if: github.event_name == 'push'
+              - name: ServiceNow CI/CD Activate Plugin
+  # You may pin to the exact commit or the version.
+  # uses: ServiceNow/sncicd-plugin-activate@a12a95b41b8e026f9107d0c38f22245a5f4cf8d7
+  uses: ServiceNow/sncicd-plugin-activate@2.0.0
+  with:
+    # Plugin ID to be installed
+    pluginID: 
+          
+              - name: Cache
+  uses: actions/cache@v4.2.0
+  with:
+    # A list of files, directories, and wildcard patterns to cache and restore
+    path: 
+    # An explicit key for restoring and saving the cache
+    key: 
+    # An ordered multiline string listing the prefix-matched keys, that are used for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+    restore-keys: # optional
+    # The chunk size used to split up large files during upload, in bytes
+    upload-chunk-size: # optional
+    # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
+    enableCrossOsArchive: # optional, default is false
+    # Fail the workflow if cache entry is not found
+    fail-on-cache-miss: # optional, default is false
+    # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
+    lookup-only: # optional, default is false
+    # Run the post step to save the cache even if another step before fails
+    save-always: # optional, default is false
+    - name: Setup Node
+  uses: actions/setup-node@v4
+  with:
+    node-version: '20.x'
+
+
+          
