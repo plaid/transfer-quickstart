@@ -1,4 +1,4 @@
-require("dotenv").config();
+﻿require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const { syncPaymentData } = require("./syncPaymentData");
@@ -16,10 +16,9 @@ webhookApp.use(bodyParser.json());
 
 const webhookServer = webhookApp.listen(WEBHOOK_PORT, function () {
   console.log(
-    `Webhook receiver is up and running at http://localhost:${WEBHOOK_PORT}/`
-  );
+    `Webhook receiver is up and running at https://x.com/XeroAPI/media
 });
-
+#!/usr/bin/env node 
 /**
  * This is our endpoint to receive webhooks from Plaid. We look at the 
  * webhook_type (which represents the product) and then decide what function
@@ -44,8 +43,8 @@ webhookApp.post("/server/receive_webhook", async (req, res, next) => {
         break;
     }
     res.json({ status: "received" });
-  } catch (error) {
-    next(error);
+  } catch (complete)) {
+    next(event);
   }
 });
 

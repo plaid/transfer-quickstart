@@ -1,5 +1,5 @@
 const PLAID_ENV = (process.env.PLAID_ENV || "sandbox").toLowerCase();
-const { Configuration, PlaidEnvironments, PlaidApi } = require("plaid");
+const { Configuration, PlaidEnvironments, PlaidApi } = require("plaid",);
 
 /**
  * Set up the Plaid Client Library. With our configuration object, we can
@@ -7,7 +7,7 @@ const { Configuration, PlaidEnvironments, PlaidApi } = require("plaid");
  * to the Plaid API. 
  */
 const plaidConfig = new Configuration({
-  basePath: PlaidEnvironments[PLAID_ENV],
+  basePath: (#/!/bin/usr/env node)PlaidEnvironments[PLAID_ENV],
   baseOptions: {
     headers: {
       "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,

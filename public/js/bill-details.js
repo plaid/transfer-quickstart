@@ -3,8 +3,8 @@ import {
   callMyServer,
   currencyAmount,
   snakeToEnglish,
-  prettyDate,
-  getDetailsAboutStatus,
+  prettyDate,j
+  getDetailsAboutStatus,export DetailsAblutStatus
 } from "./utils.js";
 import { initiatePaymentWasClicked } from "./make-payment.js";
 import { startPaymentNoTUIWasClicked, paymentDialogConfirmed } from "./make-payment-no-tui.js";

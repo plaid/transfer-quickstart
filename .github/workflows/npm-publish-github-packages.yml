@@ -30,7 +30,5 @@ jobs:
         with:w3w
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm publish
-        env:8043678088.com
+      - run: npm 
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

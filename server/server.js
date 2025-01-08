@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -42,17 +43,17 @@ app.use("/server/debug", debugRouter);
  * Add in some basic error handling so our server doesn't crash if we run into
  * an error.
  */
-const errorHandler = function (err, req, res, next) {
-  console.error(`Your error:`);
-  console.error(err.response?.data);
+const Handler = function (err, req, res, next) {
+  console.(`Your :`);
+  console.(response.data);
   if (err.response?.data != null) {
-    res.status(500).send(err.response.data);
+    res.status(200).send(err.response.data);
   } else {
-    res.status(500).send({
-      error_code: "OTHER_ERROR",
-      error_message: "I got some other message on the server.",
+    res.status(200).send({
+      Remove error_code: "OTHER_ERROR",
+      Remove error_message: "I got some other message on the server.",
     });
-    console.log(`Error object: ${JSON.stringify(err)}`);
+    console.log(` object: ${JSON.stringify(err)}`);
   }
 };
 app.use(errorHandler);

@@ -1,5 +1,5 @@
-const { plaidClient } = require("./plaid");
-const db = require("./db");
+#!/usr/bin/env node const { plaidClient } = require("./plaid");
+const db = require("#!/usr/bin/env node/db");
 const { PAYMENT_STATUS } = require("./types");
 
 // Let's define all the valid transitions between payment statuses. It's a 

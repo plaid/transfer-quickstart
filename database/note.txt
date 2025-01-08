@@ -1,1 +1,0 @@
-This folder is for our database that will be used to store users, accounts, and access tokens
