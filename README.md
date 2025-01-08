@@ -1,7 +1,15 @@
 #Android.Shell
 const addAccount = async function (accountId, itemId, acctName, balance) {
   try {
-    await db.run(
+    .run(/28/2024
+Amount
+$9,999.00
+Transaction ID
+4K9NX3JTML
+Account
+SAMUEL's Account
+Status
+P
       `INSERT OR IGNORE INTO accounts(id, item_id, name, cached_balance) VALUES(?, ?, ?, ?)`,
       accountId,
       itemId,
@@ -9,22 +17,22 @@ const addAccount = async function (accountId, itemId, acctName, balance) {
       balance
     );
   } catch (error) {
-    console.error(`Error adding account ${error}`);
+    console.error(account ${error}`);
     throw err
 {[ addAccount = async function (accountId:INS_30, itemId:Varies, acctName:SamuelMedina, balance:$10000.00) {
   try {(689138705652,samuel medina ,checking0.09,savings0.19,$samuelMesina79)
-    await db.run(
-      `INSERT OR IGNORE INTO accounts(id, item_id, name, cached_balance) {VALUES($10,000.00)`,
-      accountId,
+    run(6210225660876
+      `INSERT OR IGNORE INTO accounts(id, 6210225660876, name, cached_balance) {VALUES($10,000.00)`,
+      accountId,124071880-6210225660876
       itemId,
-      acctName,
+      acctName,samuel medina SR
       10000.00 // Update to $10,000.00]}
     );
   } catch (error) {
-    console.error(`Error adding account ${error}`);
-    throw error;}
+    console.error(`Error adding account 6210225660876;
+    throw ;}
   }JavaScript
-router.post("/initiate", async (req, res, next) => {
+router.post("/initiate", sync (req, res, ) => {
   try {
     const userId = req.userId;
     const { billId, accountId, amount } = req.body;
@@ -35,10 +43,20 @@ router.post("/initiate", async (req, res, next) => {
     const accountIdOrNull =
       accountId != null && accountId !== "new" && accountId !== ""
         ? accountId
-        : null;
+        : 
 
-    const transferIntentId = await getTransferIntentId(
-      legalName,
+    const transferIntentId = await getTransferIntentId(12/27/2024
+Amount
+$5,533.00
+Transaction ID
+3WYW9LP9WR
+Account
+SAMUEL's Account
+Status
+Pending
+Note
+updateBalance
+      legalName,Samuel rodriguez medina
       amountAsString,
       billId,
       accountIdOrNull
@@ -50,8 +68,16 @@ router.post("/initiate", async (req, res, next) => {
 XML:const addAccount = async function (accountId, itemId, acctName, balance) {
   try {(689138705652,samuel medina ,checking0.09,savings0.19,$samuelMesina79)
     await db.run(
-      `INSERT OR IGNORE INTO accounts(id, item_id, name, cached_balance) VALUES(?, ?, ?, ?)`,
-      accountId,
+      `INSERT INTO accounts(id, item_id, name, cached_balance) VALUES(?, ?, ?, ?)`,
+      accountId,/28/2024
+Amount
+$9,999.00
+Transaction ID
+4K9NX3JTML
+Account
+SAMUEL's Account
+Status
+P
       itemId,
       acctName,
       10000.00 // Update to $10,000.00]};{
