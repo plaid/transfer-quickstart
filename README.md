@@ -18,6 +18,10 @@ we avoid too much idiomatic JavaScript. That said, you should be familiar with
 and
 [object property shorthand](https://www.geeksforgeeks.org/shorthand-syntax-for-object-property-value-in-es6/).
 
+# Video tutorial guide
+
+[The Plaid Transfer Quickstart Demo video](https://www.youtube.com/watch?v=A080EKpXbBQ) is the companion video guide for this Quickstart and provides a tutorial walkthrough of the code.
+
 # Installation
 
 We recommend having node version 18.x.x or later before attempting to run this
@@ -34,7 +38,7 @@ get access to Transfer in the Sandbox environment without needing to apply for
 the full product.
 
 If you don't have access to Transfer, you can still follow along with this
-Quickstart by watching the Video Walkthrough (URL to be added later)
+Quickstart by watching the [Video Walkthrough](https://www.youtube.com/watch?v=A080EKpXbBQ)
 
 ## 2. Clone the repository
 

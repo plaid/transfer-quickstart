@@ -1,5 +1,4 @@
 import { refreshSignInStatus, signOut } from "./signin.js";
-import { startLink, exchangePublicToken } from "./link.js";
 import {
   callMyServer,
   currencyAmount,
@@ -7,8 +6,8 @@ import {
   prettyDate,
   getDetailsAboutStatus,
 } from "./utils.js";
-
-let pendingPaymentObject = {};
+import { initiatePaymentWasClicked } from "./make-payment.js";
+import { startPaymentNoTUIWasClicked, paymentDialogConfirmed } from "./make-payment-no-tui.js";
 
 /**
  * Call the server to see what banks the user is connected to.
@@ -33,186 +32,7 @@ export const getPaymentOptions = async () => {
   accountSelectNoTUI.innerHTML = innerHTML;
 };
 
-/************************
- * If you're using TransferUI (which we recommend for most developers getting started)
- * you would follow this approach.
- ***********************/
 
-/**
- * We start by sending the payment information down to the server -- the server
- * will create a Transfer Intent, and then pass that intent over to 
- * /link/token/create. So we end up with a Link token that we can use to 
- * open Link and start the payment process.
- * 
- * Note that if we don't send down an account ID to use, that's a sign to Link
- * that we'll need to connect to a bank first.
- */
-export const initiatePayment = async () => {
-  const billId = new URLSearchParams(window.location.search).get("billId");
-  const accountId = document.querySelector("#selectAccount").value;
-  const amount = document.querySelector("#amountToPay").value;
-  console.log(`Paying bill ${billId} from bank ${accountId} for $${amount}`);
-  if (billId == null || amount == null) {
-    alert("Something went wrong");
-    return;
-  }
-  if (isNaN(amount) || amount <= 0) {
-    alert("Please enter a valid amount.");
-    return;
-  }
-  const { linkToken, transferIntentId } = await callMyServer(
-    "/server/payments/initiate",
-    true,
-    {
-      billId,
-      accountId,
-      amount,
-    }
-  );
-
-  // When we're all done, we're going to send the public token and the
-  // original transfer intent ID back to the server so we can gather some
-  // information about the payment that was just created.
-  const successHandler = async (publicToken, _) => {
-    console.log("Finished with Link!");
-    if (accountId === "new") {
-      console.log(
-        "Oh! Looks like you set up a new account. Let's exchange that token!"
-      );
-      await exchangePublicToken(publicToken);
-    }
-
-    await callMyServer("/server/payments/transfer_ui_complete", true, {
-      publicToken,
-      transferIntentId,
-    });
-    await Promise.all[(getBillDetails(), getPaymentOptions())];
-  };
-  startLink(linkToken, successHandler);
-};
-
-/************************
- *
- * Not interested in using TransferUI? You would use these functions instead.
- *
- ***********************/
-
-/**
- * First, let's see if our user asked to connect to a new account. If so, we'll
- * create a link token and start the Link flow through the addNewAccount function.
- */
-const startPaymentNoTUI = async () => {
-  const accountId = document.querySelector("#selectAccountNoTUI").value;
-  if (accountId === "new") {
-    await addNewAccountThenStartPayment();
-  } else {
-    await preparePaymentDialog(accountId);
-  }
-};
-
-
-/**
- * If a user decides to add a new account, you can create a link
- * token like normal. We ask our server to return an account ID from the
- * item we just created. (Ideally, this works best if you've customized your
- * link flow so that your user selects a single account)
- */
-const addNewAccountThenStartPayment = async () => {
-  const linkTokenData = await callMyServer(
-    "/server/tokens/create_link_token",
-    true
-  );
-  startLink(linkTokenData.link_token, async (publicToken, metadata) => {
-    console.log("Finished with Link!");
-    console.log(metadata);
-    const newAccountId = await exchangePublicToken(publicToken, true);
-    await getPaymentOptions();
-    // A little hacky, but let's change the value of our drop-down so we
-    // can grab the account name later.
-    document.querySelector("#selectAccountNoTUI").value = newAccountId;
-    preparePaymentDialog(newAccountId);
-  });
-};
-
-/**
- * Next, we'll start a transfer by gathering up some information about the
- * payment and using that to populate a consent dialog.
- */
-const preparePaymentDialog = async (accountId) => {
-  const billId = new URLSearchParams(window.location.search).get("billId");
-  const amount = document.querySelector("#amountToPayNoTUI").value;
-  console.log(`Paying bill ${billId} from bank ${accountId} for $${amount}`);
-  if (billId == null || amount == null) {
-    alert("Something went wrong");
-    return;
-  }
-  if (isNaN(amount) || amount <= 0) {
-    alert("Please enter a valid amount.");
-    return;
-  }
-  if (accountId === "new") {
-    alert("Please select an account or click the 'Add new account' button.");
-    return;
-  }
-  pendingPaymentObject = { billId, accountId, amount };
-  showDialog(amount);
-};
-
-/**
- * And, here's the code to actually display the dialog.
- */
-const showDialog = async (amount) => {
-  // Set the title and message in the dialog
-  document.querySelector(
-    "#customDialogLabel"
-  ).textContent = `Confirm your ${currencyAmount(amount, "USD")} payment`;
-  document.querySelector("#dlogAccount").textContent = document.querySelector(
-    "#selectAccountNoTUI"
-  ).selectedOptions[0].textContent;
-
-  document.querySelector("#dlogDate").textContent = prettyDate(
-    new Date().toLocaleString()
-  );
-  // Show the modal
-  var myModal = new bootstrap.Modal(document.getElementById("customDialog"), {
-    keyboard: false,
-  });
-  myModal.show();
-};
-
-/**
- * If the user clicks "Confirm", we're going to store the proof of authorization
- * data necessary for Nacha compliance and then authorize and create the payment.
- *
- * You would do probably this in a single endpoint call, but we'm breaking it 
- * out into two separate calls so you don't overlook this important step.
- */
-const paymentDialogConfirmed = async () => {
-  await callMyServer(
-    "/server/payments/no_transfer_ui/store_proof_of_authorization_necessary_for_nacha_compliance",
-    true,
-    {
-      billId: pendingPaymentObject.billId,
-      accountId: pendingPaymentObject.accountId,
-      amount: pendingPaymentObject.amount,
-    }
-  );
-  const { status, message } = await callMyServer(
-    "/server/payments/no_transfer_ui/authorize_and_create",
-    true,
-    {
-      billId: pendingPaymentObject.billId,
-      accountId: pendingPaymentObject.accountId,
-      amount: pendingPaymentObject.amount,
-    }
-  );
-  if (status === "success") {
-    await getBillDetails();
-  } else {
-    alert(message);
-    await getBillDetails();
-  }
-};
 
 /**
  * Retrieve the list of payments for a bill and update the table.
@@ -251,7 +71,7 @@ export const paymentsRefresh = async (billId) => {
 /**
  * Retrieve the details of the current bill and update the interface
  */
-const getBillDetails = async () => {
+export const getBillDetails = async () => {
   console.log("Getting bill details");
   // Grab the bill ID from the url argument
   const urlParams = new URLSearchParams(window.location.search);
@@ -318,23 +138,25 @@ const signedOutCallBack = () => {
  */
 const signedInCallBack = (userInfo) => {
   console.log(userInfo);
-  document.querySelector(
-    "#welcomeMessage"
-  ).textContent = `Hi there, ${userInfo.firstName} ${userInfo.lastName}! Let's pay your bill.`;
+  document.querySelector("#welcomeMessage").textContent = 
+  `Hi there, ${
+    userInfo.firstName?.trim() || userInfo.lastName?.trim()
+      ? `${userInfo.firstName} ${userInfo.lastName}`
+      : "Test User"
+  }! Let's pay your bill.`;
   getBillDetails();
   getPaymentOptions();
 };
-
 
 /**
  * Connects the buttons on the page to the functions above.
  */
 const selectorsAndFunctions = {
   "#signOut": () => signOut(signedOutCallBack),
-  "#payBill": initiatePayment,
+  "#payBill": initiatePaymentWasClicked,
   "#syncServer": performServerSync,
   "#fireWebhook": fireTestWebhook,
-  "#payBillNoTUI": startPaymentNoTUI,
+  "#payBillNoTUI": startPaymentNoTUIWasClicked,
   "#dlogConfirmBtn": paymentDialogConfirmed,
 };
 
@@ -345,6 +167,7 @@ Object.entries(selectorsAndFunctions).forEach(([sel, fun]) => {
     document.querySelector(sel)?.addEventListener("click", fun);
   }
 });
+
 
 /**
  * Enable Bootstrap tooltips

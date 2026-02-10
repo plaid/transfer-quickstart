@@ -65,6 +65,7 @@ function handleItemWebhook(code, requestBody) {
       );
       break;
     case "PENDING_EXPIRATION":
+    case "PENDING_DISCONNECT":
       console.log(
         `We should tell our user to reconnect their bank with Plaid so there's no disruption to their service`
       );
