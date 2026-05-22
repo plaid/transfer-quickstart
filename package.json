@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.plaid.com/plaid/base-sample-app"
+    "url": "https://github.com/plaid/transfer-quickstart"
   },
   "author": "Todd Kerpelman",
   "license": "ISC",
