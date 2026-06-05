@@ -10,7 +10,7 @@ proof of authorization), and another method where you have to perform those
 steps yourself.
 
 This app uses NodeJS on the backend (with Express as the server), SQLite as the
-database, and plain ol' vanilla JavaScript on the frontend. It designed to be
+database, and plain ol' vanilla JavaScript on the frontend. It's designed to be
 simple enough that a Python engineer without a lot of deep JavaScript experience
 could still understand what's going on and follow along in a video tutorial, so
 we avoid too much idiomatic JavaScript. That said, you should be familiar with
@@ -141,7 +141,7 @@ This sample application simulates two different ways that a user could use Plaid
 Transfer to pay by bank. Obviously, in a real app, you wouldn't use both
 options; this is just for demonstration purposes.
 
-Create a fictional customer account or sign in with a existing account to start
+Create a fictional customer account or sign in with an existing account to start
 the process.
 
 To create a bill, simply click the **Generate a new bill** button. One will be
@@ -157,7 +157,7 @@ you stay compliant with Nacha guidelines.
 Using Transfer UI doesn't require installing any additional libraries on the
 client -- it's already part of Link.
 
-To pay your bill using Tranfer UI, click the "Pay" link next to any individual
+To pay your bill using Transfer UI, click the "Pay" link next to any individual
 bill. This will take you to a Bill Details page where you can see details about
 your bill, including the original amount, and how much is still due.
 
@@ -246,7 +246,7 @@ before, but with these differences:
    signal to Plaid that, when the user goes through the Link flow, Link needs to
    prompt them to connect to a financial institution.
 
-2. Inside of Link, the user is first asked to connect to a checking our savings
+2. Inside of Link, the user is first asked to connect to a checking or savings
    account before they are presented with the transfer authorization form.
 
 3. When Link is complete, Plaid takes the `public_token` that it receives in the
@@ -257,7 +257,7 @@ before, but with these differences:
 
 4. Because our application still wants to know what account was eventually used
    with the transfer, our server also makes a separate call to `/transfer/get`,
-   to find out value of the `account_id` that was used in the transfer.
+   to find out the value of the `account_id` that was used in the transfer.
 
 ## 1a. Paying your bill without Transfer UI
 
@@ -315,7 +315,7 @@ process for making a payment:
    This endpoint will return a `decision` value of `declined` or `approved`,
    although Plaid will default to approving transfers if it doesn't have enough
    data otherwise. So if Plaid can't connect to a bank to see the user's
-   available balance, it will be marked as `approved` and a note will be make in
+   available balance, it will be marked as `approved` and a note will be made in
    the `decision_rationale` field. You should check this field and determine the
    right course for your application.
 
@@ -350,7 +350,7 @@ before, but with these differences:
    `access_token`.
 
 5. This endpoint also accepts a `returnAccountId: true` argument, which it uses
-   to send back an `account_d` belonging to the recently connected bank. This is
+   to send back an `account_id` belonging to the recently connected bank. This is
    how our client knows which bank account to use in the upcoming transfer. In a
    real application, you should be using a Link flow that requires the user to
    select only a single account so there's no risk of ambiguation here.
@@ -391,19 +391,19 @@ sequential list of transfer events since the `after_id` event.
 
 These events contain all of the information needed to stay on top of payment
 statuses. Most commonly, this will reflect the fact that a payment's status has
-changed. When a payment's status has changed, we record that information our
+changed. When a payment's status has changed, we record that information in our
 database and update the total amount due associated with a bill. Payments that
 are marked as `settled`, for instance, can generally be considered to be
-completed and can be deducted from the total "amount due. However, the user can
+completed and can be deducted from the total "amount due." However, the user can
 still dispute unauthorized charges for up to 60 days after the payment. We also
-display a "amount pending" value, which is the sum of the payments that are
+display an "amount pending" value, which is the sum of the payments that are
 currently marked as "pending" or "posted".
 
 Our code contains some logic to ignore payments that follow "impossible" state
-logic (for example, if a payment were to go from `settled` to `pending`) This
+logic (for example, if a payment were to go from `settled` to `pending`). This
 won't happen in Plaid's event sync logic, but it can happen during development.
 For instance, if you were to replay a batch of events you had already processed.
-Our code also ignores payments that it cant find in its database. That might
+Our code also ignores payments that it can't find in its database. That might
 happen if, say, multiple developers were running separate sample applications
 with the same Plaid client_id.
 
@@ -425,7 +425,7 @@ with any changes to your users' payments.
 
 In the Sandbox environment, however, Plaid does not automatically fire any
 webhooks. Your application will need to make a call to
-`/sandbox/transfer/fire_webhook`, which tells Plaid to sent a
+`/sandbox/transfer/fire_webhook`, which tells Plaid to send a
 `TRANSFER_EVENTS_UPDATE` webhook to a URL that you pass in.
 
 In our application, clicking the "Fire a webhook" button will send a call to the
@@ -436,13 +436,13 @@ URL that you have specified in your .env file.
 If you have a working tunnel between this URL and your webhook receiver, this
 webhook should be picked up by the webhook server in `webhookServer.js`. If the
 server sees that this is a `TRANSFER_EVENTS_UPDATE` webhook, then it will call
-the internal `syncPaymentData()` function that calls `/transfer/events/sync` and
+the internal `syncPaymentData()` function that calls `/transfer/event/sync` and
 processes the data. (This is the same function that is called by the "Perform
 Server Sync" button.)
 
 # What files do what?
 
-Here are a list of files in the application along with a brief description of
+Here is a list of files in the application along with a brief description of
 what they do. Files in **bold** contain the code most relevant to implementing
 Plaid Transfer.
 
@@ -478,7 +478,7 @@ Plaid Transfer.
   performs the client logic necessary to pay bills, both with and without
   Transfer UI. We should probably rename or split up this file.
 - `js/client-bills.js` -- Fetches and displays info about the user's bills
-- `js/home.hs` -- Handle creating in and signing in users
+- `js/home.js` -- Handle creating and signing in users
 - `js/link.js` -- Initialize and run Link, send the public token down to the
   server
 - `js/signin.js` -- Gets users, signs in users, signs out users, and calls a
