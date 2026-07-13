@@ -24,7 +24,7 @@ and
 
 # Installation
 
-We recommend having node version 18.x.x or later before attempting to run this
+We recommend having node version 20.17.x or later before attempting to run this
 application.
 
 ## 1. Make sure you have access to Transfer
@@ -468,15 +468,19 @@ Plaid Transfer.
   one _without_ using Link's Transfer UI.
 - **`/routes/payments.js`** -- List payments, create a Transfer Intent, and
   create a payment using Link's Transfer UI.
-- **`/routes/token.js`** -- Create a link token, exchange a public token for an
+- **`/routes/tokens.js`** -- Create a link token, exchange a public token for an
   access token, also does all the work around fetching and saving bank names
-- `/routes/user.js` -- Sign in, sign out, create user, etc.
+- `/routes/users.js` -- Sign in, sign out, create user, etc.
 
 ### Files On the client
 
 - **`js/bill-details.js`** -- Does much more than get bill details! This
   performs the client logic necessary to pay bills, both with and without
   Transfer UI. We should probably rename or split up this file.
+- `js/make-payment.js` -- Client logic for making a payment using Link's Transfer
+  UI
+- `js/make-payment-no-tui.js` -- Client logic for making a payment _without_
+  Link's Transfer UI
 - `js/client-bills.js` -- Fetches and displays info about the user's bills
 - `js/home.js` -- Handle creating and signing in users
 - `js/link.js` -- Initialize and run Link, send the public token down to the
