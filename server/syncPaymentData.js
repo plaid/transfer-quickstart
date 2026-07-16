@@ -71,7 +71,7 @@ const processPaymentEvent = async (event) => {
   const paymentId = existingPayment.id;
   const billId = existingPayment.bill_id;
 
-  if (!(event.event_type in PAYMENT_STATUS)) {
+  if (!Object.values(PAYMENT_STATUS).includes(event.event_type)) {
     console.error(`Unknown event type ${event.event_type}`);
     return;
   }
