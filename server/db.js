@@ -198,6 +198,19 @@ const addBankNameForItem = async function (itemId, institutionName) {
   }
 };
 
+const deactivateItem = async function (itemId) {
+  try {
+    const result = await db.run(
+      `UPDATE items SET is_active = 0 WHERE id = ?`,
+      itemId
+    );
+    return result;
+  } catch (error) {
+    console.error(`Error deactivating item ${error}`);
+    throw error;
+  }
+};
+
 const addAccount = async function (accountId, itemId, acctName, balance) {
   try {
     await db.run(
@@ -641,6 +654,7 @@ module.exports = {
   getBankNamesForUser,
   addItem,
   addBankNameForItem,
+  deactivateItem,
   addAccount,
   createNewBill,
   getBillsForUser,

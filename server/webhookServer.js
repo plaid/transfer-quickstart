@@ -96,7 +96,12 @@ function handleTransferWebhook(code, requestBody) {
   switch (code) {
     case "TRANSFER_EVENTS_UPDATE":
       console.log(`Looks like we have some new transfer events to process`);
-      syncPaymentData();
+      // We don't await this so that we can ack the webhook to Plaid quickly,
+      // but we still need to catch any error so it doesn't become an
+      // unhandled promise rejection.
+      syncPaymentData().catch((error) => {
+        console.error(`Error syncing payment data: ${error}`);
+      });
       break;
     case "RECURRING_NEW_TRANSFER":
     case "RECURRING_TRANSFER_SKIPPED":

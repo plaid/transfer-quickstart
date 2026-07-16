@@ -2,6 +2,7 @@ const express = require("express");
 const { plaidClient } = require("../plaid");
 const db = require("../db");
 const authenticate = require("../middleware/authenticate");
+const { PAYMENT_STATUS } = require("../types");
 
 const router = express.Router();
 router.use(authenticate);
@@ -90,6 +91,15 @@ router.post("/authorize_and_create", async (req, res, next) => {
       paymentId
     );
     if (authStatus === "rejected") {
+      // The authorization was declined, so no transfer will ever be created
+      // for this payment. Mark it as denied so it doesn't sit at
+      // "waiting_for_auth" forever.
+      await db.updatePaymentWithTransferInfo(
+        paymentId,
+        null,
+        PAYMENT_STATUS.DENIED,
+        decisionMessage
+      );
       res.json({
         status: "rejected",
         message: decisionMessage,

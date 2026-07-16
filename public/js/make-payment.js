@@ -83,7 +83,7 @@ export const initiatePayment = async (useEmbeddedSearch = false) => {
       publicToken,
       transferIntentId,
     });
-    await Promise.all[(getBillDetails(), getPaymentOptions())];
+    await Promise.all([getBillDetails(), getPaymentOptions()]);
   };
   if (useEmbeddedSearch) {
     const targetElement = document.querySelector("#plaidEmbedContainer");
