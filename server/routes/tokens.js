@@ -49,6 +49,11 @@ router.post("/exchange_public_token", async (req, res, next) => {
         access_token: tokenData.access_token,
       });
       const acctsData = acctsResponse.data;
+      if (acctsData.accounts.length === 0) {
+        throw new Error(
+          `No accounts were returned for item ${tokenData.item_id}`
+        );
+      }
       accountId = acctsData.accounts[0].account_id;
     }
 
