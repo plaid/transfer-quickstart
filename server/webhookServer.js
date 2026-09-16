@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const bodyParser = require("body-parser");
 const { syncPaymentData } = require("./syncPaymentData");
 
 /**
@@ -11,8 +10,8 @@ const { syncPaymentData } = require("./syncPaymentData");
 const WEBHOOK_PORT = process.env.WEBHOOK_PORT || 8001;
 
 const webhookApp = express();
-webhookApp.use(bodyParser.urlencoded({ extended: false }));
-webhookApp.use(bodyParser.json());
+webhookApp.use(express.urlencoded({ extended: false }));
+webhookApp.use(express.json());
 
 const webhookServer = webhookApp.listen(WEBHOOK_PORT, function () {
   console.log(
