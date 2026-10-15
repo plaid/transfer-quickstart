@@ -121,7 +121,7 @@ won't regularly send any webhooks. You'll need to tell Plaid, through its
 sample application grabs the URL to use from the SANDBOX_WEBHOOK_URL value in
 the .env file.
 
-## 7. Run the application!
+## 6. Run the application!
 
 You can run your application by typing
 
