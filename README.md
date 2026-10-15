@@ -14,7 +14,7 @@ database, and plain ol' vanilla JavaScript on the frontend. It's designed to be
 simple enough that a Python engineer without a lot of deep JavaScript experience
 could still understand what's going on and follow along in a video tutorial, so
 we avoid too much idiomatic JavaScript. That said, you should be familiar with
-[destructuring](https://www.geeksforgeeks.org/shorthand-syntax-for-object-property-value-in-es6/)
+[destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)
 and
 [object property shorthand](https://www.geeksforgeeks.org/shorthand-syntax-for-object-property-value-in-es6/).
 
@@ -24,7 +24,7 @@ and
 
 # Installation
 
-We recommend having node version 20.17.x or later before attempting to run this
+We recommend having Node 20.19+ or 22.12+ before attempting to run this
 application.
 
 ## 1. Make sure you have access to Transfer
@@ -312,12 +312,15 @@ process for making a payment:
    routing and account numbers are valid, and that the user has enough money in
    their account to avoid running into NSF (insufficient fund) errors.
 
-   This endpoint will return a `decision` value of `declined` or `approved`,
-   although Plaid will default to approving transfers if it doesn't have enough
+   This endpoint will return a `decision` value of `declined`, `approved`, or
+   `user_action_required`, although Plaid will default to approving transfers if it doesn't have enough
    data otherwise. So if Plaid can't connect to a bank to see the user's
    available balance, it will be marked as `approved` and a note will be made in
    the `decision_rationale` field. You should check this field and determine the
-   right course for your application.
+   right course for your application. A `user_action_required` decision means
+   the user must go through Link again (in update mode, passing the
+   authorization's `id` as `transfer.authorization_id` to `/link/token/create`)
+   before you retry the authorization.
 
 6. Finally, the server makes a call to `/transfer/create`, passing along the
    `authorization_id` that was returned in the previous step, along with some
@@ -334,7 +337,7 @@ Plaid (or they wish to connect a new account), the process works similar to
 before, but with these differences:
 
 1. When the user specifies that they wish to connect to a new account to make
-   the payment, the client calls the `/server/token/create` endpoint on the
+   the payment, the client calls the `/server/tokens/create_link_token` endpoint on the
    locally-running server.
 
 2. Our server generates a `link_token` by calling Plaid's `/link/token/create`
